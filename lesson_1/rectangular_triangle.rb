@@ -3,29 +3,23 @@ def rectangular?(sides)
 end
 
 def isoscales?(sides)
-  sides[0] == sides[1] || sides[0] == sides[2] || sides[1] == sides[2]
-end
-
-def equilateral?(sides)
-  sides[0] == sides[1] && sides[0] == sides[2]
+  sides[0] == sides[1]
 end
 
 sides = []
 
 print 'Введите сторону a: '
-sides << gets.chomp.to_f
+sides << gets.to_f
 print 'Введите сторону b: '
-sides << gets.chomp.to_f
+sides << gets.to_f
 print 'Введите сторону c: '
-sides << gets.chomp.to_f
+sides << gets.to_f
 
 sides.sort!
 
-if equilateral?(sides)
-  puts 'Треугольник является равнобедренным и расносторонним'
-elsif rectangular?(sides)
-  print 'Треугольник является прямоугольным'
-  print isoscales?(sides) ? "и равнобедренным\n" : "\n"
+if rectangular?(sides)
+  puts 'Треугольник является прямоугольным'
+  puts 'И равнобедренным' if isoscales?(sides)
 else
   puts 'Треугольник не является прямоугольным'
 end

@@ -5,7 +5,7 @@ growth = 0
 
 loop do
   print 'Ваш рост: '
-  growth = gets.chomp.to_f
+  growth = gets.to_f
   break if growth.nonzero?
 
   puts 'Вы ввели некорректные данные, попробуйте еще раз'
