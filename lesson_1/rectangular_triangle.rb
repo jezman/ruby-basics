@@ -4,6 +4,7 @@ end
 
 def equilateral?(sides)
   sides[0] == sides[1] && sides[0] == sides[2]
+end
 
 def isoscales?(sides)
   sides[0] == sides[1]
@@ -20,10 +21,10 @@ sides << gets.to_f
 
 sides.sort!
 
-if rectangular?(sides)
+if equilateral?(sides)
+  puts 'Треугольник равносторонний, но не прямоугольный'
+elsif rectangular?(sides)
   puts 'Треугольник является прямоугольным'
 elsif isoscales?(sides)
-  puts 'Треугольник является равнобедренным'
-elsif equilateral?(sides)
-  puts 'Треугольник равносторонний, но не прямоугольный'
+  puts 'Треугольник является прямоугольным и равнобедренным'
 end
