@@ -3,7 +3,7 @@ a = gets.to_f
 print 'b: '
 b = gets.to_f
 print 'c: '
-c = getsp.to_f
+c = gets.to_f
 
 d = b**2 - (4 * a * c)
 puts "Дискриминант равен #{d}"
