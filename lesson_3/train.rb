@@ -8,12 +8,12 @@ class Train
     @speed = 0
   end
 
-  def gain
-    @speed += 5
+  def gain_speed(value)
+    @speed += value
   end
 
-  def stop
-    @speed = 0
+  def reset_speed(value)
+    @speed = value > @speed ? @speed -= value : 0
   end
 
   def attach_wagon
@@ -21,12 +21,13 @@ class Train
   end
 
   def detach_wagon
-    @wagons -= 1 if stopped? && @wagons > 1
+    @wagons -= 1 if stopped? && @wagons > 0
   end
 
   def route=(route)
     @route = route
     @station_index = 0
+    current_station.take(self)
   end
 
   def current_station
@@ -34,25 +35,25 @@ class Train
   end
 
   def next_station
-    route.stations[@station_index + 1] unless last?
+    route.stations[@station_index + 1] unless last_station?
   end
 
   def previous_station
-    route.stations[@station_index - 1] unless first?
+    route.stations[@station_index - 1] unless first_station?
   end
 
   def forward
     return unless next_station
-    current_station.recieve(self)
+    current_station.send(self)
     next_station.take(self)
-    @station_index += 1 unless last_station?
+    @station_index += 1
   end
 
   def backward
     return unless previous_station
-    current_station.recieve(self)
-    next_station.take(self)
-    @station_index -= 1 unless first_station?
+    current_station.send(self)
+    previous_station.take(self)
+    @station_index -= 1
   end
 
   private
