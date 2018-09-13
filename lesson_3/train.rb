@@ -45,14 +45,14 @@ class Train
     return unless next_station
     current_station.recieve(self)
     next_station.take(self)
-    @station_index += 1 unless last?
+    @station_index += 1 unless last_station?
   end
 
   def backward
     return unless previous_station
     current_station.recieve(self)
     next_station.take(self)
-    @station_index -= 1 unless first?
+    @station_index -= 1 unless first_station?
   end
 
   private
@@ -61,11 +61,11 @@ class Train
     @speed.zero?
   end
 
-  def first?
+  def first_station?
     current_station == route.stations.first
   end
 
-  def last?
+  def last_station?
     current_station == route.stations.last
   end
 end
