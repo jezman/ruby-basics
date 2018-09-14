@@ -30,8 +30,7 @@ puts "|#{'Сумма'.center(13)}|"
 total = 0
 
 cart.each do |item, value|
-  sum = 0
-  sum += value[:price] * value[:count]
+  sum = value[:price] * value[:count]
   total += sum
 
   print_line(68)
