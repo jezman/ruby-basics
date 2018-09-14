@@ -13,7 +13,7 @@ class Train
   end
 
   def reset_speed(value)
-    @speed = value > @speed ? @speed -= value : 0
+    @speed = value < @speed ? @speed -= value : 0
   end
 
   def attach_wagon
