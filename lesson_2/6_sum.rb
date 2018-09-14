@@ -26,10 +26,13 @@ print "|#{'Товар'.center(29)}"
 print "|#{'Цена за ед.'.center(13)}"
 print "|#{'Кол-во'.center(8)}"
 puts "|#{'Сумма'.center(13)}|"
-sum = 0
+
+total = 0
 
 cart.each do |item, value|
+  sum = 0
   sum += value[:price] * value[:count]
+  total += sum
 
   print_line(68)
   print "|#{item.ljust(29)}"
@@ -39,4 +42,4 @@ cart.each do |item, value|
 end
 
 print_line(68)
-puts "Сумма ваших покупок составила: #{sum}".rjust(68)
+puts "Сумма ваших покупок составила: #{total}".rjust(68)
