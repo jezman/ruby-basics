@@ -21,7 +21,7 @@ class Train
   end
 
   def detach_wagon(wagon)
-    @wagons.delete(wagon) if stopped? && @wagons > 0
+    @wagons.delete(wagon) if stopped? && !@wagons.empty?
   end
 
   def route=(route)

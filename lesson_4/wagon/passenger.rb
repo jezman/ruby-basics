@@ -1,2 +1,2 @@
-class PassangerWagon < Wagon
+class PassengerWagon < Wagon
 end
