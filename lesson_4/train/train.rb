@@ -1,10 +1,10 @@
 class Train
   attr_reader :number, :speed, :type, :wagons, :route, :station_index
 
-  def initialize(number, type, wagons)
+  def initialize(number, type)
     @number = number
     @type = type
-    @wagons = wagons
+    @wagons = []
     @speed = init_speed
   end
 
@@ -16,12 +16,12 @@ class Train
     @speed = value < @speed ? @speed -= value : 0
   end
 
-  def attach_wagon
-    @wagons += 1 if stopped?
+  def attach_wagon(wagon)
+    @wagons << wagon if stopped?
   end
 
-  def detach_wagon
-    @wagons -= 1 if stopped? && @wagons > 0
+  def detach_wagon(wagon)
+    @wagons.delete(wagon) if stopped? && @wagons > 0
   end
 
   def route=(route)
