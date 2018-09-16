@@ -1,11 +1,11 @@
 require_relative 'route'
 require_relative 'station'
-require_relative 'train/train'
-require_relative 'train/cargo'
-require_relative 'train/passenger'
-require_relative 'wagon/wagon'
-require_relative 'wagon/cargo'
-require_relative 'wagon/passenger'
+require_relative 'train'
+require_relative 'train/cargo_train'
+require_relative 'train/passenger_train'
+require_relative 'wagon'
+require_relative 'wagon/cargo_wagon'
+require_relative 'wagon/passenger_wagon'
 
 class App
   def initialize
@@ -40,7 +40,7 @@ class App
       when 2 then add_train
       when 3 then manage_route
       when 4 then set_route_to_train
-      when 5 then attach_wagon_to_train
+      when 5 then manage_wagon
       when 6 then move_train
       when 7 then show_stations
       when 0 then break
@@ -62,7 +62,7 @@ class App
     puts '0 - пассажирский'
     puts '1 - грузовой'
     print 'тип поезда: '
-    type = gets.to_i.zero? ? 'passenger' : 'cargo'
+    type = gets.to_i.zero? ? :passenger : :cargo
 
     add_train!(number, type)
   end
@@ -104,51 +104,59 @@ class App
   end
 
   def add_station_to_route
-    station = select_station
-    select_route.add(station)
-  end
-
-  def remove_station_from_route
-    station = select_station
-    select_route.remove(station)
-  end
-
-  def set_route_to_train
-    select_train.route = select_route
-  end
-
-  def move_train
-    train = select_train
-
-    puts '0 - вперед'
-    puts '1 - назад'
-
-    case gets.to_i
-    when 0 then to_next_station(train)
-    when 1 then to_previous_station(train)
+    if !@routes.empty?
+      station = select_station
+      select_route.add(station)
+    else
+      puts 'список маршрутов пуст'
     end
   end
 
-  def attach_wagon_to_train
+  def remove_station_from_route
+    if !@routes.empty?
+      station = select_station
+      select_route.remove(station)
+    else
+      puts 'список маршрутов пуст'
+    end
+  end
+
+  def set_route_to_train
+    if !@trains.empty? || !@routes.empty?
+      select_train.route = select_route
+    else
+      puts 'сперва добавьте поезда и маршруты'
+    end
+  end
+
+  def move_train
     if !@trains.empty?
       train = select_train
 
-      case train.class
-      when PassengerTrain.class then attach_passenger_wagon(train)
-      when CargoTrain.class then attach_cargo_wagon(train)
+      puts '0 - вперед'
+      puts '1 - назад'
+
+      case gets.to_i
+      when 0 then to_next_station(train)
+      when 1 then to_previous_station(train)
       end
     else
       puts 'список поездов пуст'
     end
   end
 
-  def detach_wagon_from_train
+  def manage_wagon
     if !@trains.empty?
       train = select_train
 
-      case train.class
-      when PassengerTrain.class then detach_passenger_wagon(train)
-      when CargoTrain.class then detach_cargo_wagon(train)
+      puts '0 - добавить выгон'
+      puts '1 - отцепить вагон' unless train.wagons.empty?
+
+      case gets.to_i
+      when 0
+        train.passenger? ? attach_passenger_wagon(train) : attach_cargo_wagon(train)
+      when 1
+        train.passenger? ? detach_passenger_wagon(train) : detach_cargo_wagon(train)
       end
     else
       puts 'список поездов пуст'
@@ -166,8 +174,8 @@ class App
 
   def add_train!(number, type)
     case type
-    when 'cargo' then @trains << CargoTrain.new(number)
-    when 'passenger' then @trains << PassengerTrain.new(number)
+    when :cargo then @trains << CargoTrain.new(number)
+    when :passenger then @trains << PassengerTrain.new(number)
     end
   end
 

@@ -1,6 +1,5 @@
 class CargoTrain < Train
   def initialize(number)
-    super(number, 'cargo')
-
+    super(number, :cargo)
   end
 end

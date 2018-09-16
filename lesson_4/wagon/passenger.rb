@@ -1,2 +1,0 @@
-class PassengerWagon < Wagon
-end
