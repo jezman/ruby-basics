@@ -148,15 +148,14 @@ class App
   def manage_wagon
     if !@trains.empty?
       train = select_train
+      wagon = train.cargo? ? CargoWagon.new : PassengerWagon.new
 
       puts '0 - добавить выгон'
       puts '1 - отцепить вагон' unless train.wagons.empty?
 
       case gets.to_i
-      when 0
-        train.passenger? ? attach_passenger_wagon(train) : attach_cargo_wagon(train)
-      when 1
-        train.passenger? ? detach_passenger_wagon(train) : detach_cargo_wagon(train)
+      when 0 then train.attach_wagon(wagon)
+      when 1 then detach_wagon(train)
       end
     else
       puts 'список поездов пуст'
@@ -179,20 +178,7 @@ class App
     end
   end
 
-  def attach_passenger_wagon(train)
-    train.attach_wagon(PassengerWagon.new)
-  end
-
-  def attach_cargo_wagon(train)
-    train.attach_wagon(CargoWagon.new)
-  end
-
-  def detach_passenger_wagon(train)
-    wagon = select_wagon(train)
-    train.detach_wagon(wagon)
-  end
-
-  def detach_cargo_wagon(train)
+  def detach_wagon(train)
     wagon = select_wagon(train)
     train.detach_wagon(wagon)
   end
