@@ -4,10 +4,6 @@ class PassengerTrain < Train
   end
 
   def attach_wagon(wagon)
-    @wagons << wagon if stopped? && wagon.passenger?
-  end
-
-  def detach_wagon(wagon)
-    @wagons.delete(wagon) if stopped? && !@wagons.empty? && wagon.passenger?
+    super(wagon) if wagon.passenger?
   end
 end
