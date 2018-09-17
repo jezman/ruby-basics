@@ -48,8 +48,6 @@ class App
     end
   end
 
-  # private
-
   def add_station
     print 'название станции: '
     @stations << Station.new(gets.chomp)
