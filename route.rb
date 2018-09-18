@@ -6,6 +6,7 @@ class Route
   def initialize(source, destination)
     @stations = [source, destination]
     @name = "#{source.name.capitalize} - #{destination.name.capitalize}"
+    register_instance
   end
 
   def add(station)
