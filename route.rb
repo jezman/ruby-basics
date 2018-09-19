@@ -33,7 +33,7 @@ class Route
   attr_reader :source, :destination
 
   def validate!
-    raise 'Недопустимая станция' unless @source.is_a?(Station) || @destination.is_a?(Station)
+    raise 'Недопустимая станция' unless @source.is_a?(Station) && @destination.is_a?(Station)
     raise 'Пункты отправления и назначения не могут совпадать' if @source.eql?(@destination)
   end
 end

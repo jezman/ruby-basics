@@ -3,6 +3,8 @@ require_relative 'manufacturer'
 require_relative 'validate'
 
 class Train
+  TRAIN_NUMBER_FORMAT = /^[a-z0-9]{3}\-?[a-z0-9]{2}$/i
+
   include InstanceCounter
   include Manufacturer
   include Validate
@@ -104,8 +106,6 @@ class Train
   def last_station?
     current_station == route.stations.last
   end
-
-  TRAIN_NUMBER_FORMAT = /^[a-z0-9]{3}\-?[a-z0-9]{2}$/i
 
   def validate!
     raise 'Неуказан тип поезда' if @type.nil?
