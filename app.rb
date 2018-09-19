@@ -6,8 +6,11 @@ require_relative 'train/passenger_train'
 require_relative 'wagon'
 require_relative 'wagon/cargo_wagon'
 require_relative 'wagon/passenger_wagon'
+require_relative 'selectors'
 
 class App
+  include Selectors
+
   def initialize
     @routes = []
     @stations = []
@@ -66,11 +69,7 @@ class App
 
     print 'номер поезда: '
     number = gets.chomp
-
-    puts '0 - пассажирский'
-    puts '1 - грузовой'
-    print 'тип поезда: '
-    type = gets.to_i.zero? ? :passenger : :cargo
+    type = select_type
 
     add_train!(number, type)
     puts "#{type.eql?(:cargo) ? 'Грузовой' : 'Пассажирский'} поезд с номером #{number} успешно создан"
@@ -82,15 +81,9 @@ class App
 
   def manage_route
     raise 'Сперва добавьте две станции' if @stations.size < 2
+    choice = select_menu_routes(@routes.empty?)
 
-    puts '0 - добавить марштур'
-    unless @routes.empty?
-      puts '1 - добавить станцию к машруту'
-      puts '2 - удалить станцию из маршрута'
-    end
-
-    print 'ваш выбор: '
-    case gets.to_i
+    case choice
     when 0 then add_route
     when 1 then add_station_to_route
     when 2 then remove_station_from_route
@@ -101,21 +94,7 @@ class App
 
   def add_route
     attempt = 0
-    puts 'СПИСОК СТАНЦИЙ'
-    @stations.each_with_index do |station, index|
-      puts "#{index} - #{station.name}"
-    end
-
-    print 'станция отправления: '
-    source = get_index(@stations)
-
-    print 'станция назначения: '
-    destination = 0
-
-    loop do
-      destination = gets.to_i
-      break if destination <= @stations.size - 1 && source != destination
-    end
+    source, destination = select_stations(@stations)
     route = Route.new(@stations[source], @stations[destination])
     @routes << route
     puts "Маршрут '#{route.name}' добавлен"
@@ -126,25 +105,28 @@ class App
   end
 
   def add_station_to_route
-    station = select_station
-    select_route.add(station)
+    station = select_station(@stations)
+    route = select_route(@routes)
+    route.add(station)
   end
 
   def remove_station_from_route
-    station = select_station
-    select_route.remove(station)
+    station = select_station(@stations)
+    route = select_route(@routes)
+    route.remove(station)
   end
 
   def set_route_to_train
     raise 'сперва добавьте поезда и маршруты' if @trains.empty? || @routes.empty?
-      select_train.route = select_route
+    train = select_train(@trains)
+    train.route = select_route(@routes)
   rescue StandardError => e
     puts "Ошибка: #{e.message}"
   end
 
   def move_train
     raise 'список поездов пуст' if @trains.empty?
-    train = select_train
+    train = select_train(@trains)
 
     puts '0 - вперед'
     puts '1 - назад'
@@ -158,11 +140,11 @@ class App
   end
 
   def manage_wagon
-    raise 'Список поездов пуст' if !@trains.empty?
-    train = select_train
+    raise 'Список поездов пуст' if @trains.empty?
+    train = select_train(@trains)
     wagon = train.cargo? ? CargoWagon.new : PassengerWagon.new
 
-    puts '0 - добавить выгон'
+    puts '0 - добавить вагон'
     puts '1 - отцепить вагон' unless train.wagons.empty?
 
     case gets.to_i
@@ -200,69 +182,5 @@ class App
 
   def to_previous_station(train)
     train.backward
-  end
-
-  def select_station
-    puts 'СПИСОК СТАНЦИЙ'
-    @stations.each_with_index do |station, index|
-      puts "#{index} - #{station.name}"
-    end
-
-    print 'выберите станцию: '
-    station_index = get_index(@stations)
-
-    @stations[station_index]
-  end
-
-  def select_train
-    puts 'СПИСОК ПОЕЗДОВ'
-
-    @trains.each_with_index do |train, index|
-      puts "#{index} - #{train.number}"
-    end
-
-    print 'поезд: '
-    train_index = get_index(@trains)
-
-    @trains[train_index]
-  end
-
-  def select_route
-    puts 'СПИСОК МАРШРУТОВ'
-    @routes.each_with_index do |route, index|
-      puts "#{index} - #{route.name}"
-    end
-
-    print 'маршрут: '
-    route_index = get_index(@routes)
-
-    @routes[route_index]
-  end
-
-  def select_wagon(train)
-    wagons = train.wagons
-
-    raise 'у поезда нет вагонов' if wagons.empty?
-    puts 'СПИСОК ВАГОНОВ'
-    wagons.each_with_index do |_, index|
-      puts "Вагон ##{index}"
-    end
-
-    print 'выберите вагон: '
-    wagon_index = get_index(wagons)
-
-    wagons[wagon_index]
-  rescue StandardError => e
-    puts "Ошибка: #{e.message}"
-  end
-
-  def get_index(array)
-    index = 0
-    loop do
-      index = gets.to_i
-      break if index <= array.size - 1
-    end
-
-    index
   end
 end
