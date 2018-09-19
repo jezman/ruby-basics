@@ -1,5 +1,8 @@
-# noinspection RubyClassVariableUsageInspection
+require_relative 'validate'
+require_relative 'instance_counter'
+
 class Station
+  include Validate
   include InstanceCounter
 
   attr_reader :name, :trains
@@ -12,6 +15,7 @@ class Station
 
   def initialize(name)
     @name = name
+    validation!
     @trains = []
     @@stations << self
     register_instance
@@ -26,6 +30,14 @@ class Station
   end
 
   def trains_by_type(type)
-    @trains.select {|train| train.type == type}
+    @trains.select { |train| train.type == type }
+  end
+
+  private
+
+  NAME_FORMAT = /^[а-я]{3,}$/i
+
+  def validation!
+    raise 'Название должно содержать как минимум 3 буквы русского алфавита' if @name !~ NAME_FORMAT
   end
 end

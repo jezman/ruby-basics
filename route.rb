@@ -1,11 +1,18 @@
+require_relative 'instance_counter'
+require_relative 'validate'
+
 class Route
   include InstanceCounter
+  include Validate
 
   attr_reader :name, :stations
 
   def initialize(source, destination)
-    @stations = [source, destination]
-    @name = "#{source.name.capitalize} - #{destination.name.capitalize}"
+    @source = source
+    @destination = destination
+    @stations = [@source, @destination]
+    validate!
+    @name = "#{@source.name.capitalize} - #{@destination.name.capitalize}"
     register_instance
   end
 
@@ -19,5 +26,14 @@ class Route
 
   def route
     @stations.each { |station| puts station }
+  end
+
+  private
+
+  attr_reader :source, :destination
+
+  def validate!
+    raise 'Недопустимая станция' unless @source.is_a?(Station) || @destination.is_a?(Station)
+    raise 'Пункты отправления и назначения не могут совпадать' if @source.eql?(@destination)
   end
 end
