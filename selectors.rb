@@ -1,44 +1,52 @@
 module Selectors
   def select_type
-    puts '0 - пассажирский'
-    puts '1 - грузовой'
-    print 'Укажите тип: '
+    puts '[0] - пассажирский'
+    puts '[1] - грузовой'
+    print '[?] Укажите тип: '
     gets.to_i.zero? ? :passenger : :cargo
   end
 
-  def select_menu_routes(empty)
-    puts '0 - добавить марштур'
+  def selects_route_actions(empty)
+    puts '[0] - добавить марштур'
     unless empty
-      puts '1 - добавить станцию к машруту'
-      puts '2 - удалить станцию из маршрута'
+      puts '[1] - добавить станцию к машруту'
+      puts '[2] - удалить станцию из маршрута'
     end
 
-    print 'ваш выбор: '
+    print '[?] ваш выбор: '
+    gets.to_i
+  end
+
+  def  selects_wagon_actions(empty)
+    puts '[0] - добавить вагон'
+    puts '[1] - отцепить вагон' unless empty
+
+    print '[?] ваш выбор: '
     gets.to_i
   end
 
   def select_route(routes)
-    puts 'СПИСОК МАРШРУТОВ'
+    puts '[!] список маршрутов'
     routes.each_with_index do |route, index|
-      puts "#{index} - #{route.name}"
+      puts "\t#{index} - #{route.name}"
     end
 
-    print 'маршрут: '
+    print '[?] маршрут: '
     route_index = get_index(@routes)
 
     routes[route_index]
   end
 
   def select_stations(stations)
-    puts 'СПИСОК СТАНЦИЙ'
+    puts '[!] список станций'
     stations.each_with_index do |station, index|
-      puts "#{index} - #{station.name}"
+      puts "\t#{index} - #{station.name}"
     end
 
-    print 'станция отправления: '
+    print '[?] станция отправления: '
     source = get_index(stations)
 
-    print 'станция назначения: '
+    print '[?] станция назначения: '
     destination = 0
 
     loop do
@@ -47,6 +55,54 @@ module Selectors
     end
 
     [source, destination]
+  end
+
+  def select_station(stations)
+    puts '[!] список станций'
+    stations.each_with_index do |station, index|
+      puts "\t#{index} - #{station.name}"
+    end
+
+    print '[?] выберите станцию: '
+    station_index = get_index(stations)
+
+    stations[station_index]
+  end
+
+  def select_train(trains)
+    puts '[!] список поездов'
+    trains.each_with_index do |train, index|
+      puts "\t#{index} - #{train.number}"
+    end
+
+    print '[?] поезд: '
+    train_index = get_index(trains)
+
+    trains[train_index]
+  end
+
+  def select_wagon(train)
+    wagons = train.wagons
+
+    raise 'у поезда нет вагонов' if wagons.empty?
+    puts '[!] список вагонов'
+    wagons.each_with_index do |_, index|
+      puts "\t- Вагон ##{index}"
+    end
+
+    print '[?] выберите вагон: '
+    wagon_index = get_index(wagons)
+
+    wagons[wagon_index]
+  rescue StandardError => e
+    error(e)
+  end
+
+  def selects_train_actions
+    puts '[0] - двигаться вперед'
+    puts '[1] - двигаться назад'
+    print '[?] действие: '
+    gets.chomp.to_i
   end
 
   def get_index(array)
@@ -59,44 +115,20 @@ module Selectors
     index
   end
 
-  def select_station(stations)
-    puts 'СПИСОК СТАНЦИЙ'
-    stations.each_with_index do |station, index|
-      puts "#{index} - #{station.name}"
-    end
-
-    print 'выберите станцию: '
-    station_index = get_index(stations)
-
-    stations[station_index]
+  def wait_pressing
+    print '[.] нажмите для продолжения...'
+    gets
   end
 
-  def select_train(trains)
-    puts 'СПИСОК ПОЕЗДОВ'
-    trains.each_with_index do |train, index|
-      puts "#{index} - #{train.number}"
-    end
-
-    print 'поезд: '
-    train_index = get_index(trains)
-
-    trains[train_index]
+  def error(e)
+    puts "[-] ОШИБКА: #{e.message}"
   end
 
-  def select_wagon(train)
-    wagons = train.wagons
-
-    raise 'у поезда нет вагонов' if wagons.empty?
-    puts 'СПИСОК ВАГОНОВ'
-    wagons.each_with_index do |_, index|
-      puts "Вагон ##{index}"
+  def show_stations(stations)
+    stations.each do |station|
+      puts "[!] станция: #{station.name.capitalize}"
+      station.trains.each { |train| puts "\tпоезд №#{train.number}" unless station.trains.nil? }
     end
-
-    print 'выберите вагон: '
-    wagon_index = get_index(wagons)
-
-    wagons[wagon_index]
-  rescue StandardError => e
-    puts "Ошибка: #{e.message}"
+    wait_pressing
   end
 end
