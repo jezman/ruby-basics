@@ -34,7 +34,6 @@ class App
     loop do
       help
       print '[!] выберите пункт меню: '
-      # choice = gets.to_i
 
       case gets.to_i
       when 1 then add_station
@@ -151,7 +150,7 @@ class App
     wagon = train.cargo? ? CargoWagon.new : PassengerWagon.new
 
     case selects_wagon_actions(train.wagons.empty?)
-    when 0 
+    when 0
       train.attach_wagon(wagon)
       puts '[+] вагон успешно прицеплен'
       wait_pressing
