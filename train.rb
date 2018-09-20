@@ -83,6 +83,10 @@ class Train
     @type == :passenger
   end
 
+  def each_wagons
+    @wagons.each_with_index { |wagon, index| yield wagon, index }
+  end
+
   # ниже, все методы являются помошниками для публичных методов.
   # они так же используются в подклассах, поэтому protected
   protected

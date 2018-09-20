@@ -25,7 +25,7 @@ class App
     puts '[4] - назначать маршрут поезду'
     puts '[5] - управление вагонами'
     puts '[6] - переместить поезд по маршруту'
-    puts '[7] - вывести список станций и список поездов на станции'
+    puts '[7] - вывести список станций с поездами и вагонами'
     puts '[0] - выход'
     puts
   end
@@ -43,7 +43,8 @@ class App
       when 4 then set_route_to_train
       when 5 then manage_wagon
       when 6 then move_train
-      when 7 then show_stations(@stations)
+      when 7 then show_stations
+      when 8 then show_trains
       when 0 then break
       end
     end
@@ -94,7 +95,7 @@ class App
 
   def add_route
     attempt = 0
-    source, destination = select_stations(@stations)
+    source, destination = select_stations
     route = Route.new(@stations[source], @stations[destination])
     @routes << route
     puts "[+] маршрут '#{route.name}' добавлен"
@@ -106,16 +107,16 @@ class App
   end
 
   def add_station_to_route
-    station = select_station(@stations)
-    route = select_route(@routes)
+    station = select_station
+    route = select_route
     route.add(station)
     puts "[+] станция #{station.name.capitalize} добавлена к маршруту"
     wait_pressing
   end
 
   def remove_station_from_route
-    station = select_station(@stations)
-    route = select_route(@routes)
+    station = select_station
+    route = select_route
     route.remove(station)
     puts "[+] станция #{station.name.capitalize} удалена из маршрута"
     wait_pressing
@@ -123,8 +124,8 @@ class App
 
   def set_route_to_train
     raise 'сперва добавьте поезда и маршруты' if @trains.empty? || @routes.empty?
-    train = select_train(@trains)
-    train.route = select_route(@routes)
+    train = select_train
+    train.route = select_route
     puts "[+] поезду №#{train.number} назначен маршрут '#{train.route.name}'"
     wait_pressing
   rescue StandardError => e
@@ -134,7 +135,7 @@ class App
 
   def move_train
     raise 'список поездов пуст' if @trains.empty?
-    train = select_train(@trains)
+    train = select_train
 
     case selects_train_actions
     when 0 then to_next_station(train)
@@ -146,20 +147,23 @@ class App
   end
 
   def manage_wagon
+    attempt = 0
     raise 'список поездов пуст' if @trains.empty?
-    train = select_train(@trains)
-    wagon = train.cargo? ? CargoWagon.new : PassengerWagon.new
+    train = select_train
 
     case selects_wagon_actions(train.wagons.empty?)
-    when 0 
+    when 0
+      wagon = train.cargo? ? create_cargo_wagon : create_passenger_wagon
       train.attach_wagon(wagon)
       puts '[+] вагон успешно прицеплен'
       wait_pressing
     when 1 then detach_wagon(train)
+    when 2 then load_wagon(train)
     end
   rescue StandardError => e
     error(e)
-    wait_pressing
+    attempt += 1
+    retry if attempt < 5
   end
 
   private
@@ -168,6 +172,18 @@ class App
     case type
     when :cargo then @trains << CargoTrain.new(number)
     when :passenger then @trains << PassengerTrain.new(number)
+    end
+  end
+
+  def load_wagon(train)
+    wagon = select_wagon(train)
+    if wagon.cargo?
+      puts '[?] объем: '
+      wagon.load(gets.to_i)
+      puts '[!] вагон успешно загружен'
+    else
+      wagon.take_the_place
+      puts '[!] место успешно занято'
     end
   end
 
