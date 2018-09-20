@@ -5,7 +5,7 @@ class Wagon
   include Manufacturer
   include Validate
 
-  attr_reader :type
+  attr_reader :type, :used_capacity
 
   def initialize(type, capacity)
     @type = type
@@ -22,18 +22,18 @@ class Wagon
     @type == :passenger
   end
 
-  protected
-
   def free_capacity
     @capacity - @used_capacity
   end
 
-  def fill!(count = 1)
+  def load!(count = 1)
     raise 'всё уже занято' if @used_capacity == @capacity
     raise 'не хватает места' if count > free_capacity
     raise 'неверно указано количество' unless count.is_a?(Integer)
     @used_capacity += count
   end
+
+  protected
 
   def validate!
     raise 'Неуказан тип вагона' if @type.nil?

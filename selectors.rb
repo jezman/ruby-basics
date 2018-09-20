@@ -132,12 +132,12 @@ module Selectors
     train.each_wagons do |wagon, i|
       if wagon.cargo?
         print " - - вагон № #{i} - #{get_type(wagon.type)},"
-        print " cвободных мест: #{wagon.available_volume},"
-        puts " занято: #{wagon.used_volume}"
+        print " cвободных мест: #{wagon.free_capacity},"
+        puts " занято: #{wagon.used_capacity}"
       else
         print " - - вагон №#{i} - #{get_type(wagon.type)},"
         print " cвободного места : #{wagon.free_seats},"
-        puts " занято: #{wagon.occupied_seats}"
+        puts " занято: #{wagon.used_seats}"
       end
     end
   end

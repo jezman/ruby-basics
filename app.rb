@@ -179,10 +179,10 @@ class App
     wagon = select_wagon(train)
     if wagon.cargo?
       puts '[?] объем: '
-      wagon.load(gets.to_i)
+      wagon.load!(gets.to_i)
       puts '[!] вагон успешно загружен'
     else
-      wagon.take_the_place
+      wagon.load!
       puts '[!] место успешно занято'
     end
   end
