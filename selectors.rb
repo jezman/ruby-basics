@@ -3,6 +3,14 @@ require_relative 'displays'
 module Selectors
   include Displays
 
+  def ask_train
+    print '[?] номер поезда: '
+    number = gets.chomp
+    type = select_type
+
+    [number, type]
+  end
+
   def select_type
     puts '[0] - пассажирский'
     puts '[1] - грузовой'

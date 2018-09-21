@@ -21,7 +21,8 @@ class Route
   end
 
   def remove(station)
-    @stations.delete(station) if [@stations.first, @stations.last].none?(station)
+    first_last = [@stations.first, @stations.last]
+    @stations.delete(station) if first_last.none?(station)
   end
 
   def route

@@ -55,8 +55,7 @@ class App
     attempt = 0
     print '[?] введите название станции: '
     station_name = gets.chomp
-    station = Station.new(station_name)
-    @stations << station
+    @stations << Station.new(station_name)
     puts "[+] станция '#{station_name}' успешно создана"
     wait_pressing
   rescue StandardError => e
@@ -68,9 +67,7 @@ class App
   def add_train
     attempt = 0
 
-    print '[?] номер поезда: '
-    number = gets.chomp
-    type = select_type
+    number, type = ask_train
 
     add_train!(number, type)
     print "[+] #{type.eql?(:cargo) ? 'грузовой' : 'пассажирский'}"
@@ -125,7 +122,7 @@ class App
   end
 
   def set_route_to_train
-    raise 'сперва добавьте поезда и маршруты' if @trains.empty? || @routes.empty?
+    raise 'добавьте поезда и маршруты' if @trains.empty? || @routes.empty?
     train = select_train
     train.route = select_route
     puts "[+] поезду №#{train.number} назначен маршрут '#{train.route.name}'"
