@@ -2,10 +2,10 @@ require_relative 'validate'
 require_relative 'instance_counter'
 
 class Station
-  NAME_FORMAT = /^[а-я]{3,}$/i
-
   include Validate
   include InstanceCounter
+
+  NAME_FORMAT = /^[а-я]{3,}$/i
 
   attr_reader :name, :trains
 
@@ -16,7 +16,7 @@ class Station
   end
 
   def initialize(name)
-    @name = name
+    @name = name.capitalize!
     validation!
     @trains = []
     @@stations << self
@@ -42,6 +42,6 @@ class Station
   private
 
   def validation!
-    raise 'Название должно содержать как минимум 3 буквы русского алфавита' if @name !~ NAME_FORMAT
+    raise 'Введите минимум 3 буквы русского алфавита' if @name !~ NAME_FORMAT
   end
 end

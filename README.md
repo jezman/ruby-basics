@@ -6,3 +6,4 @@
 - [Task 5](https://github.com/jezman/thinknetica/tree/lesson_5)
 - [Task 6](https://github.com/jezman/thinknetica/tree/lesson_6)
 - [Task 7](https://github.com/jezman/thinknetica/tree/lesson_7)
+- [Task 8](https://github.com/jezman/thinknetica/tree/lesson_8)

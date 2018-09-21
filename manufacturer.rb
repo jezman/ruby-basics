@@ -1,5 +1,5 @@
 module Manufacturer
-  MANUFACTURER_NAME_FORMAT = /^[a-zа-я0-9\s]{2,}$/i
+  NAME_FORMAT = /^[a-zа-я0-9\s]{2,}$/i
 
   attr_reader :manufacturer
 
@@ -12,7 +12,6 @@ module Manufacturer
 
   def validation!
     raise 'Не указан производитель' if @manufacturer.nil?
-    raise 'Название производителя должно содержать минимум 2 символа' if @manufacturer !~ MANUFACTURER_NAME_FORMAT
+    raise 'Укажите минимум 2 символа' if @manufacturer !~ NAME_FORMAT
   end
-
 end

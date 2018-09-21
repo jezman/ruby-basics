@@ -21,7 +21,8 @@ class Route
   end
 
   def remove(station)
-    @stations.delete(station) if [@stations.first, @stations.last].none?(station)
+    first_last = [@stations.first, @stations.last]
+    @stations.delete(station) if first_last.none?(station)
   end
 
   def route
@@ -33,7 +34,9 @@ class Route
   attr_reader :source, :destination
 
   def validate!
-    raise 'Недопустимая станция' unless @source.is_a?(Station) && @destination.is_a?(Station)
-    raise 'Пункты отправления и назначения не могут совпадать' if @source.eql?(@destination)
+    unless source.is_a?(Station) && destination.is_a?(Station)
+      raise 'Недопустимая станция'
+    end
+    raise 'Отправление и назначение совпадает' if source.eql?(destination)
   end
 end

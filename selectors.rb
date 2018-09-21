@@ -1,4 +1,16 @@
+require_relative 'displays'
+
 module Selectors
+  include Displays
+
+  def ask_train
+    print '[?] номер поезда: '
+    number = gets.chomp
+    type = select_type
+
+    [number, type]
+  end
+
   def select_type
     puts '[0] - пассажирский'
     puts '[1] - грузовой'
@@ -30,58 +42,39 @@ module Selectors
 
   def select_route
     puts '[!] список маршрутов'
-    @routes.each_with_index do |route, index|
-      puts "\t#{index} - #{route.name}"
-    end
-
+    show_routes
     print '[?] маршрут: '
-    route_index = get_index(@routes)
 
-    @routes[route_index]
+    @routes[get_index(@routes)]
   end
 
   def select_stations
     puts '[!] список станций'
-    @stations.each_with_index do |station, index|
-      puts "\t#{index} - #{station.name}"
-    end
+    show_stations
 
     print '[?] станция отправления: '
     source = get_index(@stations)
 
     print '[?] станция назначения: '
-    destination = 0
-
-    loop do
-      destination = gets.to_i
-      break if destination <= @stations.size - 1
-    end
+    destination = get_index(@stations)
 
     [source, destination]
   end
 
   def select_station
     puts '[!] список станций'
-    @stations.each_with_index do |station, index|
-      puts "\t#{index} - #{station.name}"
-    end
+    show_stations
 
     print '[?] выберите станцию: '
-    station_index = get_index(@stations)
-
-    @stations[station_index]
+    @stations[get_index(@stations)]
   end
 
   def select_train
     puts '[!] список поездов'
-    @trains.each_with_index do |train, index|
-      puts "\t#{index} - #{train.number}"
-    end
+    show_trains
 
     print '[?] поезд: '
-    train_index = get_index(@trains)
-
-    @trains[train_index]
+    @trains[get_index(@trains)]
   end
 
   def select_wagon(train)
@@ -94,9 +87,7 @@ module Selectors
     end
 
     print '[?] выберите вагон: '
-    wagon_index = get_index(wagons)
-
-    wagons[wagon_index]
+    wagons[get_index(wagons)]
   rescue StandardError => e
     error(e)
   end
@@ -123,38 +114,8 @@ module Selectors
     gets
   end
 
-  def error(e)
-    puts "[-] ОШИБКА: #{e.message}"
-  end
-
-  def show_wagons(train)
-    puts " - #{get_type(train.type)} поезд №#{train.number} кол-во вагонов:#{train.wagons.size}"
-    train.each_wagons do |wagon, i|
-      if wagon.cargo?
-        print " - - вагон № #{i} - #{get_type(wagon.type)},"
-        print " cвободных мест: #{wagon.free_capacity},"
-        puts " занято: #{wagon.used_capacity}"
-      else
-        print " - - вагон №#{i} - #{get_type(wagon.type)},"
-        print " cвободного места : #{wagon.free_seats},"
-        puts " занято: #{wagon.used_seats}"
-      end
-    end
-  end
-
-  def show_stations
-    block = proc { |train| show_wagons train }
-
-    @stations.each do |station|
-      puts "[!] станция: #{station.name.capitalize}"
-      station.each_trains block
-    end
-    wait_pressing
-  end
-
-  def show_trains
-    @trains.each { |train| show_wagons train }
-    wait_pressing
+  def error(err)
+    puts "[-] ОШИБКА: #{err.message}"
   end
 
   def create_passenger_wagon
@@ -165,9 +126,5 @@ module Selectors
   def create_cargo_wagon
     print '[?] укажите объем вагона: '
     CargoWagon.new(gets.to_i)
-  end
-
-  def get_type(type)
-    type.eql?(:cargo) ? 'грузовой' : 'пассажирский'
   end
 end
