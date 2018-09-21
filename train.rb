@@ -3,11 +3,11 @@ require_relative 'manufacturer'
 require_relative 'validate'
 
 class Train
-  TRAIN_NUMBER_FORMAT = /^[a-z0-9]{3}\-?[a-z0-9]{2}$/i
-
   include InstanceCounter
   include Manufacturer
   include Validate
+
+  TRAIN_NUMBER_FORMAT = /^[a-z0-9]{3}\-?[a-z0-9]{2}$/i
 
   attr_reader :number, :speed, :type, :wagons, :route, :station_index
 
@@ -83,8 +83,8 @@ class Train
     @type == :passenger
   end
 
-  def each_wagons
-    @wagons.each_with_index { |wagon, index| yield wagon, index }
+  def each_wagons(block)
+    @wagons.each_with_index { |w, i| block.call w, i } if block_given?
   end
 
   # ниже, все методы являются помошниками для публичных методов.

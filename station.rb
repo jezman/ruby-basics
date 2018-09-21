@@ -2,10 +2,10 @@ require_relative 'validate'
 require_relative 'instance_counter'
 
 class Station
-  NAME_FORMAT = /^[а-я]{3,}$/i
-
   include Validate
   include InstanceCounter
+
+  NAME_FORMAT = /^[а-я]{3,}$/i
 
   attr_reader :name, :trains
 
@@ -16,7 +16,7 @@ class Station
   end
 
   def initialize(name)
-    @name = name
+    @name = name.capitalize!
     validation!
     @trains = []
     @@stations << self
@@ -36,7 +36,7 @@ class Station
   end
 
   def each_trains(block)
-    @trains.each { |train| block.call train }
+    @trains.each { |train| block.call train } if block_given?
   end
 
   private

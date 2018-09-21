@@ -12,7 +12,6 @@ module Manufacturer
 
   def validation!
     raise 'Не указан производитель' if @manufacturer.nil?
-    raise 'Название производителя должно содержать минимум 2 символа' if @manufacturer !~ MANUFACTURER_NAME_FORMAT
+    raise 'Укажите минимум 2 символа' if @manufacturer !~ MANUFACTURER_NAME_FORMAT
   end
-
 end

@@ -34,7 +34,6 @@ class App
     loop do
       help
       print '[!] выберите пункт меню: '
-      # choice = gets.to_i
 
       case gets.to_i
       when 1 then add_station
@@ -43,9 +42,9 @@ class App
       when 4 then set_route_to_train
       when 5 then manage_wagon
       when 6 then move_train
-      when 7 then show_stations
-      when 8 then show_trains
+      when 7 then show_all!
       when 0 then break
+      else help
       end
     end
   end
@@ -196,11 +195,11 @@ class App
 
   def to_next_station(train)
     train.forward
-    puts "[+] поезд прибыл на станцию #{train.current_station}"
+    puts "[+] поезд прибыл на станцию #{train.current_station.name}"
   end
 
   def to_previous_station(train)
     train.backward
-    puts "[+] поезд вернулся на станцию #{train.current_station}"
+    puts "[+] поезд вернулся на станцию #{train.current_station.name}"
   end
 end
