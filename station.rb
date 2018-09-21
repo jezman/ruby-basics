@@ -36,12 +36,12 @@ class Station
   end
 
   def each_trains(block)
-    @trains.each { |train| block.call train } if block_given?
+    @trains.each { |train| block.call train }
   end
 
   private
 
   def validation!
-    raise 'Название должно содержать как минимум 3 буквы русского алфавита' if @name !~ NAME_FORMAT
+    raise 'Введите минимум 3 буквы русского алфавита' if @name !~ NAME_FORMAT
   end
 end

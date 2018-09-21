@@ -59,7 +59,6 @@ module Selectors
 
     print '[?] выберите станцию: '
     @stations[get_index(@stations)]
-
   end
 
   def select_train
@@ -67,9 +66,7 @@ module Selectors
     show_trains
 
     print '[?] поезд: '
-    train_index = get_index(@trains)
-
-    @trains[train_index]
+    @trains[get_index(@trains)]
   end
 
   def select_wagon(train)
@@ -82,9 +79,7 @@ module Selectors
     end
 
     print '[?] выберите вагон: '
-    wagon_index = get_index(wagons)
-
-    wagons[wagon_index]
+    wagons[get_index(wagons)]
   rescue StandardError => e
     error(e)
   end
@@ -124,5 +119,4 @@ module Selectors
     print '[?] укажите объем вагона: '
     CargoWagon.new(gets.to_i)
   end
-
 end

@@ -11,6 +11,8 @@ require_relative 'selectors'
 class App
   include Selectors
 
+  attr_accessor :routes, :stations, :trains
+
   def initialize
     @routes = []
     @stations = []
@@ -71,7 +73,8 @@ class App
     type = select_type
 
     add_train!(number, type)
-    puts "[+] #{type.eql?(:cargo) ? 'грузовой' : 'пассажирский'} поезд с номером #{number} успешно создан"
+    print "[+] #{type.eql?(:cargo) ? 'грузовой' : 'пассажирский'}"
+    puts " поезд с номером #{number} успешно создан"
     wait_pressing
   rescue StandardError => e
     error(e)
@@ -150,6 +153,16 @@ class App
     raise 'список поездов пуст' if @trains.empty?
     train = select_train
 
+    case_wagon_action(train)
+  rescue StandardError => e
+    error(e)
+    attempt += 1
+    retry if attempt < 5
+  end
+
+  private
+
+  def case_wagon_action(train)
     case selects_wagon_actions(train.wagons.empty?)
     when 0
       wagon = train.cargo? ? create_cargo_wagon : create_passenger_wagon
@@ -159,13 +172,7 @@ class App
     when 1 then detach_wagon(train)
     when 2 then load_wagon(train)
     end
-  rescue StandardError => e
-    error(e)
-    attempt += 1
-    retry if attempt < 5
   end
-
-  private
 
   def add_train!(number, type)
     case type

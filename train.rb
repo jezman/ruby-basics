@@ -7,7 +7,7 @@ class Train
   include Manufacturer
   include Validate
 
-  TRAIN_NUMBER_FORMAT = /^[a-z0-9]{3}\-?[a-z0-9]{2}$/i
+  NUMBER_FORMAT = /^[a-z0-9]{3}\-?[a-z0-9]{2}$/i
 
   attr_reader :number, :speed, :type, :wagons, :route, :station_index
 
@@ -15,6 +15,10 @@ class Train
 
   def self.find(number)
     @@trains[number]
+  end
+
+  def self.all
+    @@trains
   end
 
   def initialize(number, type)
@@ -83,8 +87,8 @@ class Train
     @type == :passenger
   end
 
-  def each_wagons(block)
-    @wagons.each_with_index { |w, i| block.call w, i } if block_given?
+  def each_wagons
+    @wagons.each_with_index { |w, i| yield w, i }
   end
 
   # ниже, все методы являются помошниками для публичных методов.
@@ -115,7 +119,7 @@ class Train
     raise 'Неуказан тип поезда' if @type.nil?
     raise 'Недопустимый тип поезда' unless %i[cargo passenger].include?(@type)
     raise 'Неуказан номер поезда' if @number.nil?
-    raise 'Введите номер в формате ХХХХХ или ХХХ-ХХ' if @number !~ TRAIN_NUMBER_FORMAT
+    raise 'Введите номер в формате ХХХХХ или ХХХ-ХХ' if number !~ NUMBER_FORMAT
     raise 'Поезд с таким номер уже существует' if self.class.find(@number)
   end
 end

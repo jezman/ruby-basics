@@ -36,6 +36,6 @@ class Route
     unless source.is_a?(Station) && destination.is_a?(Station)
       raise 'Недопустимая станция'
     end
-    raise 'Совпадают пункты отправления и назначения' if source.eql?(destination)
+    raise 'Отправление и назначение совпадает' if source.eql?(destination)
   end
 end
