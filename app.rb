@@ -1,3 +1,4 @@
+require_relative 'menu'
 require_relative 'route'
 require_relative 'station'
 require_relative 'train'
@@ -9,6 +10,7 @@ require_relative 'wagon/passenger_wagon'
 require_relative 'selectors'
 
 class App
+  include Menu
   include Selectors
 
   attr_accessor :routes, :stations, :trains
@@ -17,38 +19,6 @@ class App
     @routes = []
     @stations = []
     @trains = []
-  end
-
-  def help
-    puts
-    puts '[1] - создать станцию'
-    puts '[2] - создать поезд'
-    puts '[3] - управление маршрутом'
-    puts '[4] - назначать маршрут поезду'
-    puts '[5] - управление вагонами'
-    puts '[6] - переместить поезд по маршруту'
-    puts '[7] - вывести список станций с поездами и вагонами'
-    puts '[0] - выход'
-    puts
-  end
-
-  def run
-    loop do
-      help
-      print '[!] выберите пункт меню: '
-
-      case gets.to_i
-      when 1 then add_station
-      when 2 then add_train
-      when 3 then manage_route
-      when 4 then set_route_to_train
-      when 5 then manage_wagon
-      when 6 then move_train
-      when 7 then show_all!
-      when 0 then break
-      else help
-      end
-    end
   end
 
   def add_station
