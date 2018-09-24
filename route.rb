@@ -1,13 +1,15 @@
-require_relative 'instance_counter'
-require_relative 'validate'
-
 class Route
+  include Accessors
   include InstanceCounter
-  include Validate
+  include Validation
 
   attr_reader :name, :stations
 
+  validate :route, :presence
+  validate :self, :type, Route
+
   def initialize(source, destination)
+    @self = self
     @source = source
     @destination = destination
     @stations = [@source, @destination]
@@ -27,16 +29,5 @@ class Route
 
   def route
     @stations.each { |station| puts station }
-  end
-
-  private
-
-  attr_reader :source, :destination
-
-  def validate!
-    unless source.is_a?(Station) && destination.is_a?(Station)
-      raise 'Недопустимая станция'
-    end
-    raise 'Отправление и назначение совпадает' if source.eql?(destination)
   end
 end

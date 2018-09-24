@@ -1,4 +1,6 @@
 class CargoTrain < Train
+  validate :self, :type, CargoTrain
+
   def initialize(number)
     super(number, :cargo)
   end

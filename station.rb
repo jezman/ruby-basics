@@ -1,13 +1,15 @@
-require_relative 'validate'
-require_relative 'instance_counter'
-
 class Station
-  include Validate
+  include Accessors
+  include Validation
   include InstanceCounter
 
   NAME_FORMAT = /^[а-я]{3,}$/i
 
   attr_reader :name, :trains
+
+  validate :name, :presence
+  validate :name, :format, NAME_FORMAT
+  validate :self, :type, Station
 
   @@stations = []
 
@@ -16,18 +18,19 @@ class Station
   end
 
   def initialize(name)
+    @self = self
     @name = name.capitalize!
-    validation!
     @trains = []
     @@stations << self
+    validate!
     register_instance
   end
 
-  def take(train)
+  def take_train(train)
     @trains << train
   end
 
-  def send(train)
+  def send_train(train)
     @trains.delete(train)
   end
 
@@ -37,11 +40,5 @@ class Station
 
   def each_trains(block)
     @trains.each { |train| block.call train }
-  end
-
-  private
-
-  def validation!
-    raise 'Введите минимум 3 буквы русского алфавита' if @name !~ NAME_FORMAT
   end
 end

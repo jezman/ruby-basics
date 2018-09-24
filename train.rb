@@ -1,15 +1,16 @@
-require_relative 'instance_counter'
-require_relative 'manufacturer'
-require_relative 'validate'
-
 class Train
+  include Accessors
   include InstanceCounter
   include Manufacturer
-  include Validate
+  include Validation
 
   NUMBER_FORMAT = /^[a-z0-9]{3}\-?[a-z0-9]{2}$/i
 
-  attr_reader :number, :speed, :type, :wagons, :route, :station_index
+  attr_reader :number, :speed, :train_type, :wagons, :route, :station_index
+
+  validate :train_type, :presence
+  validate :number, :presence
+  validate :number, :format, NUMBER_FORMAT
 
   @@trains = {}
 
@@ -22,8 +23,9 @@ class Train
   end
 
   def initialize(number, type)
+    @self = self
     @number = number
-    @type = type
+    @train_type = type
     validate!
     @wagons = []
     @speed = init_speed
@@ -50,7 +52,7 @@ class Train
   def route=(route)
     @route = route
     @station_index = source_station_index
-    current_station.take(self)
+    current_station.take_train(self)
   end
 
   def current_station
@@ -67,24 +69,24 @@ class Train
 
   def forward
     return unless next_station
-    current_station.send(self)
-    next_station.take(self)
+    current_station.send_train(self)
+    next_station.take_train(self)
     @station_index += 1
   end
 
   def backward
     return unless previous_station
-    current_station.send(self)
-    previous_station.take(self)
+    current_station.send_train(self)
+    previous_station.take_train(self)
     @station_index -= 1
   end
 
   def cargo?
-    @type == :cargo
+    @train_type == :cargo
   end
 
   def passenger?
-    @type == :passenger
+    @train_type == :passenger
   end
 
   def each_wagons
@@ -113,13 +115,5 @@ class Train
 
   def last_station?
     current_station == route.stations.last
-  end
-
-  def validate!
-    raise 'Неуказан тип поезда' if @type.nil?
-    raise 'Недопустимый тип поезда' unless %i[cargo passenger].include?(@type)
-    raise 'Неуказан номер поезда' if @number.nil?
-    raise 'Введите номер в формате ХХХХХ или ХХХ-ХХ' if number !~ NUMBER_FORMAT
-    raise 'Поезд с таким номер уже существует' if self.class.find(@number)
   end
 end
