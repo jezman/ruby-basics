@@ -36,6 +36,14 @@ module Displays
     end
   end
 
+  def trains_history
+    @trains.each do |train|
+      puts "история маршрутов поезда #{train.number}:"
+      train.route_history.each { |route| puts route.name }
+    end
+    wait_pressing
+  end
+
   private
 
   def show_wagon(wagon, index)

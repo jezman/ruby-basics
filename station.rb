@@ -1,5 +1,4 @@
 class Station
-  include Accessors
   include Validation
   include InstanceCounter
 
@@ -9,7 +8,6 @@ class Station
 
   validate :name, :presence
   validate :name, :format, NAME_FORMAT
-  validate :self, :type, Station
 
   @@stations = []
 
@@ -18,7 +16,6 @@ class Station
   end
 
   def initialize(name)
-    @self = self
     @name = name.capitalize!
     @trains = []
     @@stations << self

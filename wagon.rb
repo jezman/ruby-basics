@@ -1,15 +1,12 @@
 class Wagon
-  include Accessors
   include Manufacturer
   include Validation
 
   attr_reader :wagon_type, :used_capacity
 
   validate :wagon_type, :presence
-  validate :capacity, :type, Integer
 
   def initialize(type, capacity)
-    @self = self
     @wagon_type = type
     @capacity = capacity
     @used_capacity = 0

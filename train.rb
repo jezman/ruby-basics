@@ -1,5 +1,5 @@
 class Train
-  include Accessors
+  extend Accessors
   include InstanceCounter
   include Manufacturer
   include Validation
@@ -8,9 +8,11 @@ class Train
 
   attr_reader :number, :speed, :train_type, :wagons, :route, :station_index
 
+  strong_attr_accessor :number, Integer
+  strong_attr_accessor :speed, Integer
+  strong_attr_accessor :route, Route
+
   validate :train_type, :presence
-  validate :number, :presence
-  validate :number, :format, NUMBER_FORMAT
 
   @@trains = {}
 
@@ -23,7 +25,6 @@ class Train
   end
 
   def initialize(number, type)
-    @self = self
     @number = number
     @train_type = type
     validate!

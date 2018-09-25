@@ -1,15 +1,19 @@
+require_relative 'station'
+
 class Route
-  include Accessors
+  extend Accessors
   include InstanceCounter
   include Validation
 
   attr_reader :name, :stations
 
-  validate :route, :presence
-  validate :self, :type, Route
+  strong_attr_accessor :source, Station
+  strong_attr_accessor :destination, Station
+
+  validate :source, :presence
+  validate :destination, :presence
 
   def initialize(source, destination)
-    @self = self
     @source = source
     @destination = destination
     @stations = [@source, @destination]
@@ -30,4 +34,8 @@ class Route
   def route
     @stations.each { |station| puts station }
   end
+
+  private
+
+  attr_reader :source, :destination
 end

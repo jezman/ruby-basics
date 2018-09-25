@@ -5,17 +5,20 @@ module Validation
   end
 
   module ClassMethods
-    def validate(name, validation, *options)
-      define_method("validate_#{name}_#{validation}") do
-        send(validation.to_sym, instance_variable_get("@#{name}".to_sym), *options)
-      end
+    attr_accessor :validations
+
+    def validate(name, validation, options = nil)
+      @validations ||= []
+      @validations << { name: name, type: validation, args: options }
     end
   end
 
-  # Module for instance methods
   module InstanceMethods
     def validate!
-      public_methods.each { |method| send(method) if method =~ /^validate_/ }
+      self.class.validations.each do |validation|
+        value = instance_variable_get("@#{validation[:name]}")
+        send(validation[:type].to_sym, value, validation[:args])
+      end
     end
 
     def valid?
@@ -27,7 +30,7 @@ module Validation
 
     protected
 
-    def presence(value)
+    def presence(value, _options)
       raise 'значение не может быть nil' unless value.nil? || !value.to_s.empty?
     end
 
@@ -36,7 +39,7 @@ module Validation
     end
 
     def type(value, class_type)
-      raise 'неверный тип' unless value.class == class_type
+      raise 'неверный тип' unless value.is_a?(class_type)
     end
   end
 end

@@ -9,8 +9,11 @@ end
 
 m = MetaTest.new
 puts 'attr_accessor_with_history'
+p m.a_history
 p m.a = 1
+p m.a_history
 p m.a = 2
+p m.a_history
 p m.a = 3
 p m.a_history
 
