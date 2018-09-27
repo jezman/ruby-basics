@@ -1,4 +1,9 @@
-require_relative 'menu'
+require_relative 'modules/accessors'
+require_relative 'modules/instance_counter'
+require_relative 'modules/manufacturer'
+require_relative 'modules/menu'
+require_relative 'modules/selectors'
+require_relative 'modules/validation'
 require_relative 'route'
 require_relative 'station'
 require_relative 'train'
@@ -7,7 +12,6 @@ require_relative 'train/passenger_train'
 require_relative 'wagon'
 require_relative 'wagon/cargo_wagon'
 require_relative 'wagon/passenger_wagon'
-require_relative 'selectors'
 
 class App
   include Menu

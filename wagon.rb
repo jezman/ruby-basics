@@ -1,25 +1,24 @@
-require_relative 'validate'
-require_relative 'manufacturer'
-
 class Wagon
   include Manufacturer
-  include Validate
+  include Validation
 
-  attr_reader :type, :used_capacity
+  attr_reader :wagon_type, :used_capacity
+
+  validate :wagon_type, :presence
 
   def initialize(type, capacity)
-    @type = type
+    @wagon_type = type
     @capacity = capacity
     @used_capacity = 0
     validate!
   end
 
   def cargo?
-    @type == :cargo
+    @wagon_type == :cargo
   end
 
   def passenger?
-    @type == :passenger
+    @wagon_type == :passenger
   end
 
   def free_capacity
@@ -31,13 +30,5 @@ class Wagon
     raise 'не хватает места' if count > free_capacity
     raise 'неверно указано количество' unless count.is_a?(Integer)
     @used_capacity += count
-  end
-
-  protected
-
-  def validate!
-    raise 'Неуказан тип вагона' if @type.nil?
-    raise 'Неверный тип вагона' unless %i[cargo passenger].include?(@type)
-    raise 'Неверное указано количество' unless @capacity.is_a?(Integer)
   end
 end

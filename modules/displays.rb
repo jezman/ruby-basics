@@ -6,14 +6,12 @@ module Displays
   end
 
   def show_stations
-    puts '[!] список станций'
     @stations.each_with_index do |station, index|
       puts "  #{index} - #{station.name}"
     end
   end
 
   def show_trains
-    puts '[!] список поездов'
     @trains.each_with_index do |train, index|
       puts "    #{index} - #{train.number}"
     end
@@ -36,6 +34,14 @@ module Displays
     train.each_wagons do |wagon, index|
       show_wagon(wagon, index)
     end
+  end
+
+  def trains_history
+    @trains.each do |train|
+      puts "история маршрутов поезда #{train.number}:"
+      train.route_history.each { |route| puts route.name }
+    end
+    wait_pressing
   end
 
   private

@@ -6,7 +6,8 @@ module Menu
     4 => 'set_route_to_train',
     5 => 'manage_wagon',
     6 => 'move_train',
-    7 => 'show_all!'
+    7 => 'show_all!',
+    8 => 'trains_history'
   }.freeze
 
   def run
@@ -14,8 +15,9 @@ module Menu
       help
       print '[!] выберите пункт меню: '
 
-      choice = gets.to_i
-      choice.zero? ? break : send(command(choice))
+      number = gets.to_i
+      break if number.zero?
+      number.between?(1, 8) ? send(command(number)) : puts('неверный пункт')
     end
   end
 
@@ -30,11 +32,12 @@ module Menu
     puts '[5] - управление вагонами'
     puts '[6] - переместить поезд по маршруту'
     puts '[7] - вывести список станций с поездами и вагонами'
+    puts '[8] - история маршрутов поездов'
     puts '[0] - выход'
     puts
   end
 
   def command(cmd)
-    MENU[cmd].to_s
+    MENU[cmd].to_sym
   end
 end
