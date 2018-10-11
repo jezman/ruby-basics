@@ -1,4 +1,5 @@
-# Thinknetica. Курс 'Основы Ruby'.
+# Thinknetica. Курс 'Основы Ruby'
+
 - [Задание 1. Основы Ruby. Часть 1](https://github.com/jezman/thinknetica/tree/lesson_1)
 - [Задание 2. Основы Ruby. Часть 2](https://github.com/jezman/thinknetica/tree/lesson_2)
 - [Задание 3. Основы ООП в Ruby](https://github.com/jezman/thinknetica/tree/lesson_3)
